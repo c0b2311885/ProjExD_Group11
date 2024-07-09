@@ -7,7 +7,7 @@ HEIGHT = 600 # ゲームウィンドウの高さ
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
-class Score:
+class DisplayScore:
     """
     現金を集めた数をスコアとして表示するクラス
     """
