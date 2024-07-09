@@ -58,6 +58,8 @@ def main():
     ko_rect.center = 300, 200
     tmr = 0
     while True:
+        display_score = DisplayScore()
+
         for event in pg.event.get():
             if event.type == pg.QUIT: return
         x = tmr%3200
@@ -78,6 +80,7 @@ def main():
             mx = 1
         ko_rect.move_ip((mx,my))
         screen.blit(ko_img, ko_rect) #こうかとんRectの貼り付け
+        display_score.update(screen) #スコアの表示
 
         pg.display.update()
         tmr += 1        
