@@ -11,7 +11,7 @@ def main():
     clock  = pg.time.Clock()
     bg_img = pg.image.load("fig/road4.jpg")
     bg_img_2 = pg.transform.flip(bg_img,True,False)
-    ko_img = pg.image.load("fig/car4.png")
+    ko_img = pg.image.load("fig/car.png")
     ko_img = pg.transform.flip(ko_img,True,False)
     ko_rect = ko_img.get_rect() #こうかとんのRect抽出
     ko_rect.center = 300, 200
