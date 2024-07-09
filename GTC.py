@@ -5,7 +5,11 @@ import pygame as pg
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
+
+
+
 def main():
+    mt=0
     pg.display.set_caption("はばたけ！こうかとん")
     screen = pg.display.set_mode((800, 600))
     clock  = pg.time.Clock()
@@ -17,6 +21,7 @@ def main():
     ko_rect.center = 300, 200
     tmr = 0
     while True:
+
         for event in pg.event.get():
             if event.type == pg.QUIT: return
         x = tmr%3200
