@@ -12,7 +12,7 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     戻り値：横方向，縦方向のはみ出し判定結果（画面内：True／画面外：False）
     """
     yoko, tate = True, True
-    if obj_rct.left < 0 or 800 < obj_rct.right:
+    if obj_rct.left < 150 or 300 < obj_rct.right:
         yoko = False
     if obj_rct.top < 0 or 600 < obj_rct.bottom:
         tate = False
@@ -49,8 +49,9 @@ class Car(pg.sprite.Sprite):
             if key_list[k]:
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
+        self.rect.move_ip(sum_mv)
         if check_bound(self.rect) != (True,True):
-            self.rect.move_ip(sum_mv)
+            self.rect.move_ip(-sum_mv[0],-sum_mv[1])
         if self.state != "normal":
             self.image.set_alpha(128)
             if self.inv_time > 0:
@@ -72,7 +73,7 @@ class Enemy(pg.sprite.Sprite):
         super().__init__()
         self.image = img
         self.rect = self.image.get_rect()
-        self.rect.center = (400,300)
+        self.rect.center = (250,300)
 
 
 class Item(pg.sprite.Sprite):
