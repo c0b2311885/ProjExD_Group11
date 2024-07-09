@@ -4,15 +4,30 @@ import pygame as pg
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+
+class Protagonist(pg.sprite.Sprite):
+    """
+    主人公のクラス
+    引数:主人公の画像のSurface
+    衝突時に減るライフを設定する
+    """
+    def __init__(self,img:pg.Surface):
+        super().__init__()
+        self.image = img
+        self.rect = self.image.get_rect()
+        self.life = 3
+
+
 class Enemy(pg.sprite.Sprite):
     """
     出現する敵のクラス
     ランダムで出現するなどの処理は今後実装する
     """
-    def __init__(self,img):
+    def __init__(self,img:pg.Surface):
         super().__init__()
         self.image = img
         self.rect = self.image.get_rect()
+
 
 
 class Item(pg.sprite.Sprite):
@@ -20,7 +35,7 @@ class Item(pg.sprite.Sprite):
     出現する現金のクラス
     現金のグラフィックの違いや価値の違いは今後実装する
     """
-    def __init__(self,img):
+    def __init__(self,img:pg.Surface):
         super().__init__()
         self.image = img
         self.rect = self.image.get_rect()
