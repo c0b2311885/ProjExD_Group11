@@ -4,6 +4,19 @@ import pygame as pg
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+class Enemy(pg.sprite.Sprite):
+    def __init__(self,img):
+        super().__init__()
+        self.image = img
+        self.rect = self.image.get_rect()
+
+
+class Item(pg.sprite.Sprite):
+    def __init__(self,img):
+        super().__init__()
+        self.image = img
+        self.rect = self.image.get_rect()
+
 
 def main():
     pg.display.set_caption("はばたけ！こうかとん")
