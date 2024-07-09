@@ -14,6 +14,9 @@ class SE:
         self.se = pg.mixer.Sound("fig/お金を落とす2.mp3")
 
     def play_sound(self):
+        """
+        音声の再生
+        """
         self.se.play()
 
 
