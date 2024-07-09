@@ -50,7 +50,6 @@ def main():
             mx = 1
         ko_rect.move_ip((mx,my))
         screen.blit(ko_img, ko_rect) #こうかとんRectの貼り付け
-
         pg.display.update()
         tmr += 1        
         clock.tick(200)
