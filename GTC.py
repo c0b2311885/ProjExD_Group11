@@ -4,8 +4,24 @@ import pygame as pg
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+pg.mixer.init()
+
+class SE:
+    def __init__(self):
+        """
+        SEをロードする初期化
+        """
+        self.se = pg.mixer.Sound("fig/お金を落とす2.mp3")
+
+    def play_sound(self):
+        self.se.play()
+
+
 
 def main():
+    mt=0
+    pg.mixer.music.load("fig/カーチェイス!!.mp3")  # BGMをロード
+    pg.mixer.music.play(-1) 
     pg.display.set_caption("はばたけ！こうかとん")
     screen = pg.display.set_mode((800, 600))
     clock  = pg.time.Clock()
@@ -17,6 +33,7 @@ def main():
     ko_rect.center = 300, 200
     tmr = 0
     while True:
+
         for event in pg.event.get():
             if event.type == pg.QUIT: return
         x = tmr%3200
