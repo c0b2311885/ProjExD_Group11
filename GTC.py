@@ -9,17 +9,16 @@ def main():
     pg.display.set_caption("はばたけ！こうかとん")
     screen = pg.display.set_mode((800, 600))
     clock  = pg.time.Clock()
-    bg_img = pg.image.load("fig/pg_bg.jpg")
+    bg_img = pg.image.load("fig/road.jpg")
     bg_img_2 = pg.transform.flip(bg_img,True,False)
-    ko_img = pg.image.load("fig/3.png")
-    ko_img = pg.transform.flip(ko_img,True,False)
+    ko_img = pg.image.load("fig/car2.png")
     ko_rect = ko_img.get_rect() #こうかとんのRect抽出
     ko_rect.center = 300, 200
     tmr = 0
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: return
-        x = tmr%3200
+        x = tmr%3190
         screen.blit(bg_img, [-x, 0])
         screen.blit(bg_img_2,[-x+1600,0])
         screen.blit(bg_img, [-x+3200, 0])
