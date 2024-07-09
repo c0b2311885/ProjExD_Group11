@@ -24,6 +24,28 @@ class Score:
         screen.blit(self.image, self.rect)
 
 
+class Enemy(pg.sprite.Sprite):
+    """
+    出現する敵のクラス
+    ランダムで出現するなどの処理は今後実装する
+    """
+    def __init__(self,img):
+        super().__init__()
+        self.image = img
+        self.rect = self.image.get_rect()
+
+
+class Item(pg.sprite.Sprite):
+    """
+    出現する現金のクラス
+    現金のグラフィックの違いや価値の違いは今後実装する
+    """
+    def __init__(self,img):
+        super().__init__()
+        self.image = img
+        self.rect = self.image.get_rect()
+        
+
 def main():
     pg.display.set_caption("はばたけ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
