@@ -1,8 +1,82 @@
 import os
 import sys
 import pygame as pg
+import random 
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+class Car(pg.sprite.Sprite):
+    """
+    ゲームキャラクター（こうかとん）に関するクラス
+    """
+    delta = {  # 押下キーと移動量の辞書
+        pg.K_UP: (0, -1),
+        pg.K_DOWN: (0, +1),
+        pg.K_LEFT: (-1, 0),
+        pg.K_RIGHT: (+1, 0),
+    }
+
+    def __init__(self, img):
+        """
+        こうかとん画像Surfaceを生成する
+        引数1 num：こうかとん画像ファイル名の番号
+        引数2 xy：こうかとん画像の位置座標タプル
+        """
+        super().__init__()
+        self.image = img
+        self.rect = self.image.get_rect()
+        self.rect.center = (200, 300)
+        self.hyper_life = 0
+    
+    def update(self, key_lst: list[bool], screen: pg.Surface):
+        sum_mv = [0, 0]
+        for k, mv in __class__.delta.items():
+            if key_lst[k]:
+                sum_mv[0] += mv[0]
+                sum_mv[1] += mv[1]
+        self.rect.move_ip(sum_mv)
+        screen.blit(self.image, self.rect)
+
+class Enemy(pg.sprite.Sprite):
+    """
+    出現する敵のクラス
+    ランダムで出現するなどの処理は今後実装する
+    """
+    def __init__(self):
+        super().__init__()
+        self.image = pg.image.load(f"fig/enemy.png")
+        self.image = pg.transform.scale(self.image, (90, 66))
+        self.image = pg.transform.flip(self.image, True, False)
+        self.rect = self.image.get_rect()
+        self.rect.x = 800
+        self.rect.y = random.randint(0, 600-50)
+        self.speed = 2
+    
+    def update(self):
+        self.rect.move_ip(-self.speed, 0)
+        if self.rect.right < 0:
+            self.kill()
+
+
+class Item(pg.sprite.Sprite):
+    """
+    出現する現金のクラス
+    現金のグラフィックの違いや価値の違いは今後実装する
+    """
+    def __init__(self):
+        super().__init__()
+        self.image = pg.image.load(f"fig/cash.png")
+        self.image = pg.transform.scale(self.image, (66, 66))
+        self.rect = self.image.get_rect()
+        self.rect.x = 800
+        self.rect.y = random.randint(0, 600-50)
+        self.speed = 1
+    
+    def update(self):
+        self.rect.move_ip(-self.speed, 0)
+        if self.rect.right < 0:
+            self.kill()
+
 
 def main():
     pg.display.set_caption("はばたけ！こうかとん")
@@ -12,9 +86,12 @@ def main():
     bg_img_2 = pg.transform.flip(bg_img,True,False)
     ko_img = pg.image.load("fig/3.png")
     ko_img = pg.transform.flip(ko_img,True,False)
-    ko_rect = ko_img.get_rect() #こうかとんのRect抽出
-    ko_rect.center = 300, 200
+    car = Car(ko_img)
     tmr = 0
+    items = pg.sprite.Group()
+    emys = pg.sprite.Group()
+    score = 0
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: return
@@ -24,19 +101,19 @@ def main():
         screen.blit(bg_img, [-x+3200, 0])
         screen.blit(bg_img_2,[-x+4800,0])
         key_lst = pg.key.get_pressed()
-        mx = 0
-        my = 0
-        if key_lst[pg.K_UP]:
-            my = -1
-        if key_lst[pg.K_DOWN]:
-            my = 1
-        if key_lst[pg.K_LEFT]:
-            mx = -1
-        if key_lst[pg.K_RIGHT]:
-            mx = 1
-        ko_rect.move_ip((mx,my))
-        screen.blit(ko_img, ko_rect) #こうかとんRectの貼り付け
-
+        if tmr % 1000 == 0:
+            item = Item()
+            items.add(item)
+        if tmr % 500 == 0:
+            emy = Enemy()
+            emys.add(emy)
+        for item in pg.sprite.spritecollide(car, items, True):
+            score += 10
+        items.update()
+        items.draw(screen)
+        emys.update()
+        emys.draw(screen)
+        car.update(key_lst, screen)
         pg.display.update()
         tmr += 1        
         clock.tick(200)
