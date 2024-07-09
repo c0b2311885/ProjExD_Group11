@@ -20,9 +20,9 @@ def main():
             if event.type == pg.QUIT: return
         x = tmr%3190
         screen.blit(bg_img, [-x, 0])
-        screen.blit(bg_img_2,[-x+1600,0])
-        screen.blit(bg_img, [-x+3200, 0])
-        screen.blit(bg_img_2,[-x+4800,0])
+        screen.blit(bg_img_2,[-x+1576,0])
+        screen.blit(bg_img, [-x+3152, 0])
+        screen.blit(bg_img_2,[-x+4728,0])
         key_lst = pg.key.get_pressed()
         mx = 0
         my = 0
