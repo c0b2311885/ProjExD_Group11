@@ -5,6 +5,21 @@ import pygame as pg
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
+def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
+    """
+    オブジェクトが画面内or画面外を判定し，真理値タプルを返す関数
+    引数：こうかとんや爆弾，ビームなどのRect
+    戻り値：横方向，縦方向のはみ出し判定結果（画面内：True／画面外：False）
+    """
+    yoko, tate = True, True
+    if obj_rct.left < 0 or 800 < obj_rct.right:
+        yoko = False
+    if obj_rct.top < 0 or 600 < obj_rct.bottom:
+        tate = False
+    return yoko, tate
+
+
+
 class Car(pg.sprite.Sprite):
     """
     主人公のクラス
@@ -34,7 +49,8 @@ class Car(pg.sprite.Sprite):
             if key_list[k]:
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
-        self.rect.move_ip(sum_mv)
+        if check_bound(self.rect) != (True,True):
+            self.rect.move_ip(sum_mv)
         if self.state != "normal":
             self.image.set_alpha(128)
             if self.inv_time > 0:
