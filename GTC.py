@@ -82,6 +82,7 @@ def main():
         screen.blit(ko_img, ko_rect) #こうかとんRectの貼り付け
         display_score.update(screen) #スコアの表示
 
+        ko_rect.move_ip((-1 + mx, my))
         pg.display.update()
         tmr += 1        
         clock.tick(200)
