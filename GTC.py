@@ -45,7 +45,7 @@ class Enemy(pg.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pg.image.load(f"fig/enemy.png")
-        self.image = pg.transform.scale(self.image, (90, 66))
+        self.image = pg.transform.scale(self.image, (150, 100))
         self.image = pg.transform.flip(self.image, True, False)
         self.rect = self.image.get_rect()
         self.rect.x = 800
@@ -114,9 +114,14 @@ def main():
         if tmr % 200 == 0:
             item = Item()
             items.add(item)
-        if tmr % 500 == 0:
-            emy = Enemy()
-            emys.add(emy)
+        if tmr % 200 == 0:
+            emys.add(Enemy())
+        if tmr // 5000 >= 1:
+            if tmr % 300 == 0:
+                emys.add(Enemy())
+        if tmr // 10000 >= 1:
+            if tmr % 150 == 0:
+                emys.add(Enemy())
         for item in pg.sprite.spritecollide(car, items, True):
             score += item.score
         items.update()
