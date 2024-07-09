@@ -12,7 +12,7 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     戻り値：横方向，縦方向のはみ出し判定結果（画面内：True／画面外：False）
     """
     yoko, tate = True, True
-    if obj_rct.left < 150 or 300 < obj_rct.right:
+    if obj_rct.left < 150 or 300 < obj_rct.right:  # 横幅の移動を制限
         yoko = False
     if obj_rct.top < 0 or 600 < obj_rct.bottom:
         tate = False
