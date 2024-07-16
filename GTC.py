@@ -4,7 +4,42 @@ import pygame as pg
 import random 
 import time
 
+WIDTH = 800 # ゲームウィンドウの幅
+HEIGHT = 600 # ゲームウィンドウの高さ
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+
+class DisplayScore:
+    """
+    現金を集めた数をスコアとして表示するクラス
+    """
+    def __init__(self):
+        self.font = pg.font.Font(None, 50)
+        self.color = (0, 0, 255)
+        self.value = 0
+        self.image = self.font.render(f"Score: {self.value}", 0, self.color)
+        self.rect = self.image.get_rect()
+        self.rect.center = 100, HEIGHT - 50
+
+    def update(self, screen: pg.Surface):
+        self.image = self.font.render(f"Score: {self.value}", 0, self.color)
+        screen.blit(self.image, self.rect)
+
+
+pg.mixer.init()
+
+class SE:
+    def __init__(self):
+        """
+        SEをロードする初期化
+        """
+        self.se = pg.mixer.Sound("fig/お金を落とす2.mp3")
+
+    def play_sound(self):
+        """
+        音声の再生
+        """
+        self.se.play()
 
 
 def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
@@ -66,158 +101,6 @@ class Car(pg.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
 
-# class Enemy(pg.sprite.Sprite):
-#     """
-#     出現する敵のクラス
-#     ランダムで出現するなどの処理は今後実装する
-#     """
-#     def __init__(self,img):
-#         super().__init__()
-#         self.image = img
-#         self.rect = self.image.get_rect()
-#         self.rect.center = (250,300)
-
-
-# class Item(pg.sprite.Sprite):
-#     """
-#     出現する現金のクラス
-#     現金のグラフィックの違いや価値の違いは今後実装する
-#     """
-#     def __init__(self,img):
-#         super().__init__()
-#         self.image = img
-#         self.rect = self.image.get_rect()
-
-
-# class Explosion(pg.sprite.Sprite):
-#     """
-#     爆発に関するクラス
-#     """
-#     def __init__(self, obj:Enemy, life: int):
-#         """
-#         爆弾が爆発するエフェクトを生成する
-#         引数1 obj：爆発するBombまたは敵機インスタンス
-#         引数2 life：爆発時間
-#         """
-#         super().__init__()
-#         img = pg.image.load(f"fig/explosion.gif")
-#         self.imgs = [img, pg.transform.flip(img, 1, 1)]
-#         self.image = self.imgs[0]
-#         self.rect = self.image.get_rect(center=obj.rect.center)
-#         self.life = life
-
-#     def update(self):
-#         """
-#         爆発時間を1減算した爆発経過時間_lifeに応じて爆発画像を切り替えることで
-#         爆発エフェクトを表現する
-#         """
-#         self.life -= 1
-#         self.image = self.imgs[self.life//10%2]
-#         if self.life < 0:
-#             self.kill()
-
-
-
-# def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
-#     """
-#     オブジェクトが画面内or画面外を判定し，真理値タプルを返す関数
-#     引数：こうかとんや爆弾，ビームなどのRect
-#     戻り値：横方向，縦方向のはみ出し判定結果（画面内：True／画面外：False）
-#     """
-#     yoko, tate = True, True
-#     if obj_rct.left < 150 or 300 < obj_rct.right:  # 横幅の移動を制限
-#         yoko = False
-#     if obj_rct.top < 0 or 600 < obj_rct.bottom:
-#         tate = False
-#     return yoko, tate
-
-
-
-
-
-# class Enemy(pg.sprite.Sprite):
-#     """
-#     出現する敵のクラス
-#     ランダムで出現するなどの処理は今後実装する
-#     """
-#     def __init__(self,img):
-#         super().__init__()
-#         self.image = img
-#         self.rect = self.image.get_rect()
-#         self.rect.center = (250,300)
-
-
-# class Item(pg.sprite.Sprite):
-#     """
-#     出現する現金のクラス
-#     現金のグラフィックの違いや価値の違いは今後実装する
-#     """
-#     def __init__(self,img):
-#         super().__init__()
-#         self.image = img
-#         self.rect = self.image.get_rect()
-
-
-class Explosion(pg.sprite.Sprite):
-    """
-    爆発に関するクラス
-    """
-    def __init__(self, obj:Enemy, life: int):
-        """
-        爆弾が爆発するエフェクトを生成する
-        引数1 obj：爆発するBombまたは敵機インスタンス
-        引数2 life：爆発時間
-        """
-        super().__init__()
-        img = pg.image.load(f"fig/explosion.gif")
-        self.imgs = [img, pg.transform.flip(img, 1, 1)]
-        self.image = self.imgs[0]
-        self.rect = self.image.get_rect(center=obj.rect.center)
-        self.life = life
-
-    def update(self):
-        """
-        爆発時間を1減算した爆発経過時間_lifeに応じて爆発画像を切り替えることで
-        爆発エフェクトを表現する
-        """
-        self.life -= 1
-        self.image = self.imgs[self.life//10%2]
-        if self.life < 0:
-            self.kill()
-
-
-# class Car(pg.sprite.Sprite):
-#     """
-#     ゲームキャラクター（こうかとん）に関するクラス
-#     """
-#     delta = {  # 押下キーと移動量の辞書
-#         pg.K_UP: (0, -1),
-#         pg.K_DOWN: (0, +1),
-#         pg.K_LEFT: (-1, 0),
-#         pg.K_RIGHT: (+1, 0),
-#     }
-
-#     def __init__(self, img):
-#         """
-#         こうかとん画像Surfaceを生成する
-#         引数1 num：こうかとん画像ファイル名の番号
-#         引数2 xy：こうかとん画像の位置座標タプル
-#         """
-#         super().__init__()
-#         self.image = img
-#         self.rect = self.image.get_rect()
-#         self.rect.center = (200, 300)
-#         self.hyper_life = 0
-    
-#     def update(self, key_lst: list[bool], screen: pg.Surface):
-#         sum_mv = [0, 0]
-#         for k, mv in __class__.delta.items():
-#             if key_lst[k]:
-#                 sum_mv[0] += mv[0]
-#                 sum_mv[1] += mv[1]
-#         self.rect.move_ip(sum_mv)
-#         screen.blit(self.image, self.rect)
-
 class Enemy(pg.sprite.Sprite):
     """
     出現する敵のクラス
@@ -269,12 +152,48 @@ class Item(pg.sprite.Sprite):
         if self.rect.right < 0:
             self.kill()
 
+
+class Explosion(pg.sprite.Sprite):
+    """
+    爆発に関するクラス
+    """
+    def __init__(self, obj:Enemy, life: int):
+        """
+        爆弾が爆発するエフェクトを生成する
+        引数1 obj：爆発するBombまたは敵機インスタンス
+        引数2 life：爆発時間
+        """
+        super().__init__()
+        img = pg.image.load(f"fig/explosion.gif")
+        self.imgs = [img, pg.transform.flip(img, 1, 1)]
+        self.image = self.imgs[0]
+        self.rect = self.image.get_rect(center=obj.rect.center)
+        self.life = life
+
+    def update(self):
+        """
+        爆発時間を1減算した爆発経過時間_lifeに応じて爆発画像を切り替えることで
+        爆発エフェクトを表現する
+        """
+        self.life -= 1
+        self.image = self.imgs[self.life//10%2]
+        if self.life < 0:
+            self.kill()
+
+
 def main():
     pg.display.set_caption("はばたけ！こうかとん")
-    screen = pg.display.set_mode((800, 600))
+    screen = pg.display.set_mode((WIDTH, HEIGHT))
     clock  = pg.time.Clock()
-    bg_img = pg.image.load("fig/pg_bg.jpg")
+    bg_img = pg.image.load("fig/road4.jpg")#背景の描画
     bg_img_2 = pg.transform.flip(bg_img,True,False)
+    ko_img = pg.image.load("fig/car.png")#車の描画
+    ko_img = pg.transform.flip(ko_img,True,False)#車の画像の反転
+    ko_rect = ko_img.get_rect() #車のRect抽出
+    ko_rect.center = 300, 200#中央を指定
+    tmr = 0
+    pg.mixer.music.load("fig\カーチェイス!!.mp3")  # BGMをロード
+    pg.mixer.music.play(-1)  # BGMを再生
     ko_img = pg.image.load("fig/3.png")
     car = Car(ko_img)
 
@@ -287,15 +206,19 @@ def main():
     score = 0
 
     while True:
-        for event in pg.event.get():
+        display_score = DisplayScore()
+        display_score.update()
+
+        for event in pg.event.get():#イベントが起こった時の処理
             if event.type == pg.QUIT: return
-        x = tmr%3200
-        screen.blit(bg_img, [-x, 0])
-        screen.blit(bg_img_2,[-x+1600,0])
-        screen.blit(bg_img, [-x+3200, 0])
-        screen.blit(bg_img_2,[-x+4800,0])
-        key_lst = pg.key.get_pressed()
-        if tmr % 200 == 0:
+
+        x = tmr%3706#画面がループするようにする処理
+        screen.blit(bg_img, [-x, 0])#この一連のブリットで背景がループしても違和感がないようにする。
+        screen.blit(bg_img_2,[-x+1853,0])
+        screen.blit(bg_img, [-x+3706, 0])
+        screen.blit(bg_img_2,[-x+5559,0])
+        key_lst = pg.key.get_pressed()#keyごとの処理を行うための下準備
+        if tmr % 1000 == 0:
             item = Item()
             items.add(item)
         if tmr % 200 == 0:
