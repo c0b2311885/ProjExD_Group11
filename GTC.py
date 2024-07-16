@@ -201,7 +201,7 @@ def main():
     emys = pg.sprite.Group()
     exps = pg.sprite.Group()
     emys.add(Enemy())
-    tmr = 0
+    bt = 0
     items = pg.sprite.Group()
     emys = pg.sprite.Group()
     display_score = DisplayScore()
@@ -213,13 +213,13 @@ def main():
         for event in pg.event.get():#イベントが起こった時の処理
             if event.type == pg.QUIT: return
 
-        x = tmr%3706#画面がループするようにする処理
+        x = bt%3706#画面がループするようにする処理
         screen.blit(bg_img, [-x, 0])#この一連のブリットで背景がループしても違和感がないようにする。
         screen.blit(bg_img_2,[-x+1853,0])
         screen.blit(bg_img, [-x+3706, 0])
         screen.blit(bg_img_2,[-x+5559,0])
         key_lst = pg.key.get_pressed()#keyごとの処理を行うための下準備
-        if tmr % 1000 == 0:
+        if tmr % 100 == 0:
             item = Item()
             items.add(item)
         if tmr % 200 == 0:
@@ -259,6 +259,7 @@ def main():
         display_score.update(screen)
         pg.display.update()
         tmr += 1
+        bt += 5
         clock.tick(200)
     
 
