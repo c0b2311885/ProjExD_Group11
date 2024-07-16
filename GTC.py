@@ -66,55 +66,55 @@ class Car(pg.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
 
-class Enemy(pg.sprite.Sprite):
-    """
-    出現する敵のクラス
-    ランダムで出現するなどの処理は今後実装する
-    """
-    def __init__(self,img):
-        super().__init__()
-        self.image = img
-        self.rect = self.image.get_rect()
-        self.rect.center = (250,300)
+# class Enemy(pg.sprite.Sprite):
+#     """
+#     出現する敵のクラス
+#     ランダムで出現するなどの処理は今後実装する
+#     """
+#     def __init__(self,img):
+#         super().__init__()
+#         self.image = img
+#         self.rect = self.image.get_rect()
+#         self.rect.center = (250,300)
 
 
-class Item(pg.sprite.Sprite):
-    """
-    出現する現金のクラス
-    現金のグラフィックの違いや価値の違いは今後実装する
-    """
-    def __init__(self,img):
-        super().__init__()
-        self.image = img
-        self.rect = self.image.get_rect()
+# class Item(pg.sprite.Sprite):
+#     """
+#     出現する現金のクラス
+#     現金のグラフィックの違いや価値の違いは今後実装する
+#     """
+#     def __init__(self,img):
+#         super().__init__()
+#         self.image = img
+#         self.rect = self.image.get_rect()
 
 
-class Explosion(pg.sprite.Sprite):
-    """
-    爆発に関するクラス
-    """
-    def __init__(self, obj:Enemy, life: int):
-        """
-        爆弾が爆発するエフェクトを生成する
-        引数1 obj：爆発するBombまたは敵機インスタンス
-        引数2 life：爆発時間
-        """
-        super().__init__()
-        img = pg.image.load(f"fig/explosion.gif")
-        self.imgs = [img, pg.transform.flip(img, 1, 1)]
-        self.image = self.imgs[0]
-        self.rect = self.image.get_rect(center=obj.rect.center)
-        self.life = life
+# class Explosion(pg.sprite.Sprite):
+#     """
+#     爆発に関するクラス
+#     """
+#     def __init__(self, obj:Enemy, life: int):
+#         """
+#         爆弾が爆発するエフェクトを生成する
+#         引数1 obj：爆発するBombまたは敵機インスタンス
+#         引数2 life：爆発時間
+#         """
+#         super().__init__()
+#         img = pg.image.load(f"fig/explosion.gif")
+#         self.imgs = [img, pg.transform.flip(img, 1, 1)]
+#         self.image = self.imgs[0]
+#         self.rect = self.image.get_rect(center=obj.rect.center)
+#         self.life = life
 
-    def update(self):
-        """
-        爆発時間を1減算した爆発経過時間_lifeに応じて爆発画像を切り替えることで
-        爆発エフェクトを表現する
-        """
-        self.life -= 1
-        self.image = self.imgs[self.life//10%2]
-        if self.life < 0:
-            self.kill()
+#     def update(self):
+#         """
+#         爆発時間を1減算した爆発経過時間_lifeに応じて爆発画像を切り替えることで
+#         爆発エフェクトを表現する
+#         """
+#         self.life -= 1
+#         self.image = self.imgs[self.life//10%2]
+#         if self.life < 0:
+#             self.kill()
 
 
 
@@ -135,27 +135,27 @@ class Explosion(pg.sprite.Sprite):
 
 
 
-class Enemy(pg.sprite.Sprite):
-    """
-    出現する敵のクラス
-    ランダムで出現するなどの処理は今後実装する
-    """
-    def __init__(self,img):
-        super().__init__()
-        self.image = img
-        self.rect = self.image.get_rect()
-        self.rect.center = (250,300)
+# class Enemy(pg.sprite.Sprite):
+#     """
+#     出現する敵のクラス
+#     ランダムで出現するなどの処理は今後実装する
+#     """
+#     def __init__(self,img):
+#         super().__init__()
+#         self.image = img
+#         self.rect = self.image.get_rect()
+#         self.rect.center = (250,300)
 
 
-class Item(pg.sprite.Sprite):
-    """
-    出現する現金のクラス
-    現金のグラフィックの違いや価値の違いは今後実装する
-    """
-    def __init__(self,img):
-        super().__init__()
-        self.image = img
-        self.rect = self.image.get_rect()
+# class Item(pg.sprite.Sprite):
+#     """
+#     出現する現金のクラス
+#     現金のグラフィックの違いや価値の違いは今後実装する
+#     """
+#     def __init__(self,img):
+#         super().__init__()
+#         self.image = img
+#         self.rect = self.image.get_rect()
 
 
 class Explosion(pg.sprite.Sprite):
