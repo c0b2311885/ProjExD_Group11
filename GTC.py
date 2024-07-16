@@ -3,8 +3,49 @@ import sys
 import pygame as pg
 import time
 
+WIDTH = 800 # ゲームウィンドウの幅
+HEIGHT = 600 # ゲームウィンドウの高さ
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+
+class DisplayScore:
+    """
+    現金を集めた数をスコアとして表示するクラス
+    """
+    def __init__(self):
+        self.font = pg.font.Font(None, 50)
+        self.color = (0, 0, 255)
+        self.value = 0
+        self.image = self.font.render(f"Score: {self.value}", 0, self.color)
+        self.rect = self.image.get_rect()
+        self.rect.center = 100, HEIGHT - 50
+
+    def update(self, screen: pg.Surface):
+        self.image = self.font.render(f"Score: {self.value}", 0, self.color)
+        screen.blit(self.image, self.rect)
+
+
+class Enemy(pg.sprite.Sprite):
+    """
+    出現する敵のクラス
+    ランダムで出現するなどの処理は今後実装する
+    """
+    def __init__(self,img):
+        super().__init__()
+        self.image = img
+        self.rect = self.image.get_rect()
+
+
+class Item(pg.sprite.Sprite):
+    """
+    出現する現金のクラス
+    現金のグラフィックの違いや価値の違いは今後実装する
+    """
+    def __init__(self,img):
+        super().__init__()
+        self.image = img
+        self.rect = self.image.get_rect()
+        
 
 def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     """
@@ -64,30 +105,6 @@ class Car(pg.sprite.Sprite):
             self.image.set_alpha(255)
         screen.blit(self.image, self.rect)
 
-
-class Enemy(pg.sprite.Sprite):
-    """
-    出現する敵のクラス
-    ランダムで出現するなどの処理は今後実装する
-    """
-    def __init__(self,img):
-        super().__init__()
-        self.image = img
-        self.rect = self.image.get_rect()
-        self.rect.center = (250,300)
-
-
-class Item(pg.sprite.Sprite):
-    """
-    出現する現金のクラス
-    現金のグラフィックの違いや価値の違いは今後実装する
-    """
-    def __init__(self,img):
-        super().__init__()
-        self.image = img
-        self.rect = self.image.get_rect()
-
-
 class Explosion(pg.sprite.Sprite):
     """
     爆発に関するクラス
@@ -119,7 +136,7 @@ class Explosion(pg.sprite.Sprite):
 
 def main():
     pg.display.set_caption("はばたけ！こうかとん")
-    screen = pg.display.set_mode((800, 600))
+    screen = pg.display.set_mode((WIDTH, HEIGHT))
     clock  = pg.time.Clock()
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bg_img_2 = pg.transform.flip(bg_img,True,False)
@@ -132,6 +149,8 @@ def main():
     emys.add(Enemy(en_img))
     tmr = 0
     while True:
+        display_score = DisplayScore()
+
         for event in pg.event.get():
             if event.type == pg.QUIT: return
         x = tmr%3200
@@ -140,30 +159,20 @@ def main():
         screen.blit(bg_img, [-x+3200, 0])
         screen.blit(bg_img_2,[-x+4800,0])
         key_lst = pg.key.get_pressed()
+        mx = 0
+        my = 0
+        if key_lst[pg.K_UP]:
+            my = -1
+        if key_lst[pg.K_DOWN]:
+            my = 1
+        if key_lst[pg.K_LEFT]:
+            mx = -1
+        if key_lst[pg.K_RIGHT]:
+            mx = 1
+        ko_rect.move_ip((mx,my))
+        screen.blit(ko_img, ko_rect) #こうかとんRectの貼り付け
 
-        if len(pg.sprite.spritecollide(car,emys,False)) != 0:
-            if car.state == "normal":
-                for hit in pg.sprite.spritecollide(car,emys,False):
-                    exps.add(Explosion(hit,100))
-                car.state = "hit"
-                car.life -= 1
-                if car.life == 0:
-                    big_font = pg.font.Font(None,100)
-                    font = pg. font.Font(None,50)
-                    image_1 = big_font.render("YOU ARRESTED!!",True,(255,0,0))
-                    image_2 = font.render("You returned your cash...",True,(0,0,0))
-                    screen.blit(image_1,[100,200])
-                    screen.blit(image_2,[190,300])
-                    pg.display.update()
-                    time.sleep(5)
-                    return    
-        
-
-        car.update(key_lst,screen)
-        emys.update()
-        emys.draw(screen)
-        exps.update()
-        exps.draw(screen)
+        display_score.update()
         pg.display.update()
         tmr += 1
         clock.tick(200)
