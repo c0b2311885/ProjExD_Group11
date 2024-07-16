@@ -4,7 +4,26 @@ import pygame as pg
 import random 
 import time
 
+WIDTH = 800 # ゲームウィンドウの幅
+HEIGHT = 600 # ゲームウィンドウの高さ
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+
+class DisplayScore:
+    """
+    現金を集めた数をスコアとして表示するクラス
+    """
+    def __init__(self):
+        self.font = pg.font.Font(None, 50)
+        self.color = (0, 0, 255)
+        self.value = 0
+        self.image = self.font.render(f"Score: {self.value}", 0, self.color)
+        self.rect = self.image.get_rect()
+        self.rect.center = 100, HEIGHT - 50
+
+    def update(self, screen: pg.Surface):
+        self.image = self.font.render(f"Score: {self.value}", 0, self.color)
+        screen.blit(self.image, self.rect)
 
 
 pg.mixer.init()
@@ -123,7 +142,6 @@ class Item(pg.sprite.Sprite):
             self.kill()
 
 
-
 class Explosion(pg.sprite.Sprite):
     """
     爆発に関するクラス
@@ -152,11 +170,9 @@ class Explosion(pg.sprite.Sprite):
             self.kill()
 
 
-
-
 def main():
     pg.display.set_caption("はばたけ！こうかとん")
-    screen = pg.display.set_mode((800, 600))
+    screen = pg.display.set_mode((WIDTH, HEIGHT))
     clock  = pg.time.Clock()
     bg_img = pg.image.load("fig/road4.jpg")#背景の描画
     bg_img_2 = pg.transform.flip(bg_img,True,False)
@@ -179,6 +195,9 @@ def main():
     score = 0
 
     while True:
+        display_score = DisplayScore()
+        display_score.update()
+
         for event in pg.event.get():#イベントが起こった時の処理
             if event.type == pg.QUIT: return
 
