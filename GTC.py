@@ -148,7 +148,15 @@ def main():
                 car.state = "hit"
                 car.life -= 1
                 if car.life == 0:
-                    return
+                    big_font = pg.font.Font(None,100)
+                    font = pg. font.Font(None,50)
+                    image_1 = big_font.render("YOU ARRESTED!!",True,(255,0,0))
+                    image_2 = font.render("You returned your cash...",True,(0,0,0))
+                    screen.blit(image_1,[100,200])
+                    screen.blit(image_2,[190,300])
+                    pg.display.update()
+                    time.sleep(5)
+                    return    
         
 
         car.update(key_lst,screen)
@@ -159,21 +167,6 @@ def main():
         pg.display.update()
         tmr += 1
         clock.tick(200)
-        """
-        直下のif文内はGameOver画面表示用のコード
-        GameOver時に以下を表示するためにコピー＆ペーストして使用する
-        このプログラム内ではテストのために600フレーム後に表示される
-        """
-        if tmr >= 600:
-            big_font = pg.font.Font(None,100)
-            font = pg. font.Font(None,50)
-            image_1 = big_font.render("YOU ARRESTED!!",True,(255,0,0))
-            image_2 = font.render("You returned your cash...",True,(0,0,0))
-            screen.blit(image_1,[100,200])
-            screen.blit(image_2,[190,300])
-            pg.display.update()
-            time.sleep(5)
-            return        
     
 
 if __name__ == "__main__":
