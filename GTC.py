@@ -7,6 +7,22 @@ import time
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
+pg.mixer.init()
+
+class SE:
+    def __init__(self):
+        """
+        SEをロードする初期化
+        """
+        self.se = pg.mixer.Sound("fig/お金を落とす2.mp3")
+
+    def play_sound(self):
+        """
+        音声の再生
+        """
+        self.se.play()
+
+
 def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     """
     オブジェクトが画面内or画面外を判定し，真理値タプルを返す関数
@@ -66,34 +82,6 @@ class Car(pg.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
 
-class Explosion(pg.sprite.Sprite):
-    """
-    爆発に関するクラス
-    """
-    def __init__(self, obj:Enemy, life: int):
-        """
-        爆弾が爆発するエフェクトを生成する
-        引数1 obj：爆発するBombまたは敵機インスタンス
-        引数2 life：爆発時間
-        """
-        super().__init__()
-        img = pg.image.load(f"fig/explosion.gif")
-        self.imgs = [img, pg.transform.flip(img, 1, 1)]
-        self.image = self.imgs[0]
-        self.rect = self.image.get_rect(center=obj.rect.center)
-        self.life = life
-
-    def update(self):
-        """
-        爆発時間を1減算した爆発経過時間_lifeに応じて爆発画像を切り替えることで
-        爆発エフェクトを表現する
-        """
-        self.life -= 1
-        self.image = self.imgs[self.life//10%2]
-        if self.life < 0:
-            self.kill()
-
-
 class Enemy(pg.sprite.Sprite):
     """
     出現する敵のクラス
@@ -135,12 +123,50 @@ class Item(pg.sprite.Sprite):
             self.kill()
 
 
+
+class Explosion(pg.sprite.Sprite):
+    """
+    爆発に関するクラス
+    """
+    def __init__(self, obj:Enemy, life: int):
+        """
+        爆弾が爆発するエフェクトを生成する
+        引数1 obj：爆発するBombまたは敵機インスタンス
+        引数2 life：爆発時間
+        """
+        super().__init__()
+        img = pg.image.load(f"fig/explosion.gif")
+        self.imgs = [img, pg.transform.flip(img, 1, 1)]
+        self.image = self.imgs[0]
+        self.rect = self.image.get_rect(center=obj.rect.center)
+        self.life = life
+
+    def update(self):
+        """
+        爆発時間を1減算した爆発経過時間_lifeに応じて爆発画像を切り替えることで
+        爆発エフェクトを表現する
+        """
+        self.life -= 1
+        self.image = self.imgs[self.life//10%2]
+        if self.life < 0:
+            self.kill()
+
+
+
+
 def main():
     pg.display.set_caption("はばたけ！こうかとん")
     screen = pg.display.set_mode((800, 600))
     clock  = pg.time.Clock()
-    bg_img = pg.image.load("fig/pg_bg.jpg")
+    bg_img = pg.image.load("fig/road4.jpg")#背景の描画
     bg_img_2 = pg.transform.flip(bg_img,True,False)
+    ko_img = pg.image.load("fig/car.png")#車の描画
+    ko_img = pg.transform.flip(ko_img,True,False)#車の画像の反転
+    ko_rect = ko_img.get_rect() #車のRect抽出
+    ko_rect.center = 300, 200#中央を指定
+    tmr = 0
+    pg.mixer.music.load("fig\カーチェイス!!.mp3")  # BGMをロード
+    pg.mixer.music.play(-1)  # BGMを再生
     ko_img = pg.image.load("fig/3.png")
     car = Car(ko_img)
 
@@ -153,14 +179,15 @@ def main():
     score = 0
 
     while True:
-        for event in pg.event.get():
+        for event in pg.event.get():#イベントが起こった時の処理
             if event.type == pg.QUIT: return
-        x = tmr%3200
-        screen.blit(bg_img, [-x, 0])
-        screen.blit(bg_img_2,[-x+1600,0])
-        screen.blit(bg_img, [-x+3200, 0])
-        screen.blit(bg_img_2,[-x+4800,0])
-        key_lst = pg.key.get_pressed()
+
+        x = tmr%3706#画面がループするようにする処理
+        screen.blit(bg_img, [-x, 0])#この一連のブリットで背景がループしても違和感がないようにする。
+        screen.blit(bg_img_2,[-x+1853,0])
+        screen.blit(bg_img, [-x+3706, 0])
+        screen.blit(bg_img_2,[-x+5559,0])
+        key_lst = pg.key.get_pressed()#keyごとの処理を行うための下準備
         if tmr % 1000 == 0:
             item = Item()
             items.add(item)
