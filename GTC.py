@@ -4,6 +4,27 @@ import pygame as pg
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+class Enemy(pg.sprite.Sprite):
+    """
+    出現する敵のクラス
+    ランダムで出現するなどの処理は今後実装する
+    """
+    def __init__(self,img):
+        super().__init__()
+        self.image = img
+        self.rect = self.image.get_rect()
+
+
+class Item(pg.sprite.Sprite):
+    """
+    出現する現金のクラス
+    現金のグラフィックの違いや価値の違いは今後実装する
+    """
+    def __init__(self,img):
+        super().__init__()
+        self.image = img
+        self.rect = self.image.get_rect()
+
 
 
 
@@ -42,7 +63,6 @@ def main():
             mx = 1
         ko_rect.move_ip((mx,my))
         screen.blit(ko_img, ko_rect) #こうかとんRectの貼り付け
-
         pg.display.update()
         tmr += 1        
         clock.tick(200)
