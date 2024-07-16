@@ -4,7 +4,22 @@ import pygame as pg
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-<<<<<<< HEAD
+pg.mixer.init()
+
+class SE:
+    def __init__(self):
+        """
+        SEをロードする初期化
+        """
+        self.se = pg.mixer.Sound("fig/お金を落とす2.mp3")
+
+    def play_sound(self):
+        """
+        音声の再生
+        """
+        self.se.play()
+
+
 class Enemy(pg.sprite.Sprite):
     """
     出現する敵のクラス
@@ -27,32 +42,10 @@ class Item(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 
-=======
-pg.mixer.init()
-
-class SE:
-    def __init__(self):
-        """
-        SEをロードする初期化
-        """
-        self.se = pg.mixer.Sound("fig/お金を落とす2.mp3")
-
-    def play_sound(self):
-        """
-        音声の再生
-        """
-        self.se.play()
->>>>>>> C0B23118/music
 
 
 
 def main():
-    mt=0
-<<<<<<< HEAD
-=======
-    pg.mixer.music.load("fig/カーチェイス!!.mp3")  # BGMをロード
-    pg.mixer.music.play(-1) 
->>>>>>> C0B23118/music
     pg.display.set_caption("はばたけ！こうかとん")
     screen = pg.display.set_mode((800, 600))
     clock  = pg.time.Clock()
@@ -63,8 +56,9 @@ def main():
     ko_rect = ko_img.get_rect() #こうかとんのRect抽出
     ko_rect.center = 300, 200
     tmr = 0
+    pg.mixer.music.load("fig\カーチェイス!!.mp3")  # BGMをロード
+    pg.mixer.music.play(-1)  # BGMを再生
     while True:
-
         for event in pg.event.get():
             if event.type == pg.QUIT: return
         x = tmr%3706
