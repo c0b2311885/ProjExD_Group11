@@ -87,8 +87,10 @@ class Car(pg.sprite.Sprite):
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
         self.rect.move_ip(sum_mv)
-        if check_bound(self.rect) != (True,True):
-            self.rect.move_ip(-sum_mv[0],-sum_mv[1])
+        if check_bound(self.rect)[0] != True:
+            self.rect.move_ip(-sum_mv[0],0)
+        if check_bound(self.rect)[1] != True:
+            self.rect.move_ip(0,-sum_mv[1])
         if self.state != "normal":
             self.image.set_alpha(128)
             if self.inv_time > 0:
@@ -109,7 +111,7 @@ class Enemy(pg.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pg.image.load(f"fig/enemy.png")
-        self.image = pg.transform.scale(self.image, (150, 100))
+        self.image = pg.transform.scale(self.image, (100, 60))
         self.image = pg.transform.flip(self.image, True, False)
         self.rect = self.image.get_rect()
         self.rect.x = 800
@@ -194,7 +196,6 @@ def main():
     tmr = 0
     pg.mixer.music.load("fig\カーチェイス!!.mp3")  # BGMをロード
     pg.mixer.music.play(-1)  # BGMを再生
-    ko_img = pg.image.load("fig/3.png")
     car = Car(ko_img)
 
     emys = pg.sprite.Group()
@@ -203,12 +204,12 @@ def main():
     tmr = 0
     items = pg.sprite.Group()
     emys = pg.sprite.Group()
-    score = 0
+    display_score = DisplayScore()
+    se = SE()
+
 
     while True:
-        display_score = DisplayScore()
-        display_score.update()
-
+ 
         for event in pg.event.get():#イベントが起こった時の処理
             if event.type == pg.QUIT: return
 
@@ -230,7 +231,8 @@ def main():
             if tmr % 150 == 0:
                 emys.add(Enemy())
         for item in pg.sprite.spritecollide(car, items, True):
-            score += item.score
+            display_score.value += item.score
+            se.play_sound()
         if len(pg.sprite.spritecollide(car,emys,False)) != 0:
             if car.state == "normal":
                 for hit in pg.sprite.spritecollide(car,emys,False):
@@ -254,6 +256,7 @@ def main():
         car.update(key_lst, screen)
         exps.update()
         exps.draw(screen)
+        display_score.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(200)
