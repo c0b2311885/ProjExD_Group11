@@ -1,6 +1,7 @@
 import os
 import sys
 import pygame as pg
+import random 
 import time
 
 WIDTH = 800 # ゲームウィンドウの幅
@@ -25,27 +26,21 @@ class DisplayScore:
         screen.blit(self.image, self.rect)
 
 
-class Enemy(pg.sprite.Sprite):
-    """
-    出現する敵のクラス
-    ランダムで出現するなどの処理は今後実装する
-    """
-    def __init__(self,img):
-        super().__init__()
-        self.image = img
-        self.rect = self.image.get_rect()
+pg.mixer.init()
 
+class SE:
+    def __init__(self):
+        """
+        SEをロードする初期化
+        """
+        self.se = pg.mixer.Sound("fig/お金を落とす2.mp3")
 
-class Item(pg.sprite.Sprite):
-    """
-    出現する現金のクラス
-    現金のグラフィックの違いや価値の違いは今後実装する
-    """
-    def __init__(self,img):
-        super().__init__()
-        self.image = img
-        self.rect = self.image.get_rect()
-        
+    def play_sound(self):
+        """
+        音声の再生
+        """
+        self.se.play()
+
 
 def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     """
@@ -105,6 +100,48 @@ class Car(pg.sprite.Sprite):
             self.image.set_alpha(255)
         screen.blit(self.image, self.rect)
 
+
+class Enemy(pg.sprite.Sprite):
+    """
+    出現する敵のクラス
+    ランダムで出現するなどの処理は今後実装する
+    """
+    def __init__(self):
+        super().__init__()
+        self.image = pg.image.load(f"fig/enemy.png")
+        self.image = pg.transform.scale(self.image, (90, 66))
+        self.image = pg.transform.flip(self.image, True, False)
+        self.rect = self.image.get_rect()
+        self.rect.x = 800
+        self.rect.y = random.randint(0, 600-50)
+        self.speed = 2
+    
+    def update(self):
+        self.rect.move_ip(-self.speed, 0)
+        if self.rect.right < 0:
+            self.kill()
+
+
+class Item(pg.sprite.Sprite):
+    """
+    出現する現金のクラス
+    現金のグラフィックの違いや価値の違いは今後実装する
+    """
+    def __init__(self):
+        super().__init__()
+        self.image = pg.image.load(f"fig/cash.png")
+        self.image = pg.transform.scale(self.image, (66, 66))
+        self.rect = self.image.get_rect()
+        self.rect.x = 800
+        self.rect.y = random.randint(0, 600-50)
+        self.speed = 1
+    
+    def update(self):
+        self.rect.move_ip(-self.speed, 0)
+        if self.rect.right < 0:
+            self.kill()
+
+
 class Explosion(pg.sprite.Sprite):
     """
     爆発に関するクラス
@@ -133,46 +170,74 @@ class Explosion(pg.sprite.Sprite):
             self.kill()
 
 
-
 def main():
     pg.display.set_caption("はばたけ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     clock  = pg.time.Clock()
-    bg_img = pg.image.load("fig/pg_bg.jpg")
+    bg_img = pg.image.load("fig/road4.jpg")#背景の描画
     bg_img_2 = pg.transform.flip(bg_img,True,False)
+    ko_img = pg.image.load("fig/car.png")#車の描画
+    ko_img = pg.transform.flip(ko_img,True,False)#車の画像の反転
+    ko_rect = ko_img.get_rect() #車のRect抽出
+    ko_rect.center = 300, 200#中央を指定
+    tmr = 0
+    pg.mixer.music.load("fig\カーチェイス!!.mp3")  # BGMをロード
+    pg.mixer.music.play(-1)  # BGMを再生
     ko_img = pg.image.load("fig/3.png")
     car = Car(ko_img)
 
     emys = pg.sprite.Group()
     exps = pg.sprite.Group()
-    en_img = pg.image.load("fig/0.png")
-    emys.add(Enemy(en_img))
+    emys.add(Enemy())
     tmr = 0
+    items = pg.sprite.Group()
+    emys = pg.sprite.Group()
+    score = 0
+
     while True:
         display_score = DisplayScore()
-
-        for event in pg.event.get():
-            if event.type == pg.QUIT: return
-        x = tmr%3200
-        screen.blit(bg_img, [-x, 0])
-        screen.blit(bg_img_2,[-x+1600,0])
-        screen.blit(bg_img, [-x+3200, 0])
-        screen.blit(bg_img_2,[-x+4800,0])
-        key_lst = pg.key.get_pressed()
-        mx = 0
-        my = 0
-        if key_lst[pg.K_UP]:
-            my = -1
-        if key_lst[pg.K_DOWN]:
-            my = 1
-        if key_lst[pg.K_LEFT]:
-            mx = -1
-        if key_lst[pg.K_RIGHT]:
-            mx = 1
-        ko_rect.move_ip((mx,my))
-        screen.blit(ko_img, ko_rect) #こうかとんRectの貼り付け
-
         display_score.update()
+
+        for event in pg.event.get():#イベントが起こった時の処理
+            if event.type == pg.QUIT: return
+
+        x = tmr%3706#画面がループするようにする処理
+        screen.blit(bg_img, [-x, 0])#この一連のブリットで背景がループしても違和感がないようにする。
+        screen.blit(bg_img_2,[-x+1853,0])
+        screen.blit(bg_img, [-x+3706, 0])
+        screen.blit(bg_img_2,[-x+5559,0])
+        key_lst = pg.key.get_pressed()#keyごとの処理を行うための下準備
+        if tmr % 1000 == 0:
+            item = Item()
+            items.add(item)
+        if tmr % 500 == 0:
+            emy = Enemy()
+            emys.add(emy)
+        for item in pg.sprite.spritecollide(car, items, True):
+            score += 10
+        if len(pg.sprite.spritecollide(car,emys,False)) != 0:
+            if car.state == "normal":
+                for hit in pg.sprite.spritecollide(car,emys,False):
+                    exps.add(Explosion(hit,100))
+                car.state = "hit"
+                car.life -= 1
+                if car.life == 0:
+                    big_font = pg.font.Font(None,100)
+                    font = pg. font.Font(None,50)
+                    image_1 = big_font.render("YOU ARRESTED!!",True,(255,0,0))
+                    image_2 = font.render("You returned your cash...",True,(0,0,0))
+                    screen.blit(image_1,[100,200])
+                    screen.blit(image_2,[190,300])
+                    pg.display.update()
+                    time.sleep(5)
+                    return
+        items.update()
+        items.draw(screen)
+        emys.update()
+        emys.draw(screen)
+        car.update(key_lst, screen)
+        exps.update()
+        exps.draw(screen)
         pg.display.update()
         tmr += 1
         clock.tick(200)
