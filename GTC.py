@@ -184,7 +184,7 @@ class Explosion(pg.sprite.Sprite):
 
 
 def main():
-    pg.display.set_caption("はばたけ！こうかとん")
+    pg.display.set_caption("GTC")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     clock  = pg.time.Clock()
     bg_img = pg.image.load("fig/road4.jpg")#背景の描画
