@@ -109,7 +109,7 @@ class Enemy(pg.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pg.image.load(f"fig/enemy.png")
-        self.image = pg.transform.scale(self.image, (90, 66))
+        self.image = pg.transform.scale(self.image, (150, 100))
         self.image = pg.transform.flip(self.image, True, False)
         self.rect = self.image.get_rect()
         self.rect.x = 800
@@ -127,9 +127,20 @@ class Item(pg.sprite.Sprite):
     出現する現金のクラス
     現金のグラフィックの違いや価値の違いは今後実装する
     """
+    imgs = [pg.image.load(f"fig/cash{i}.png") for i in range(1, 4)]
+
     def __init__(self):
         super().__init__()
-        self.image = pg.image.load(f"fig/cash.png")
+        self.luck = random.randint(1, 100)
+        if self.luck < 70:
+            self.image = __class__.imgs[2]
+            self.score = 1
+        elif self.luck < 90:
+            self.image = __class__.imgs[1]
+            self.score = 10
+        else:
+            self.image = __class__.imgs[0]
+            self.score = 20
         self.image = pg.transform.scale(self.image, (66, 66))
         self.rect = self.image.get_rect()
         self.rect.x = 800
@@ -210,11 +221,16 @@ def main():
         if tmr % 1000 == 0:
             item = Item()
             items.add(item)
-        if tmr % 500 == 0:
-            emy = Enemy()
-            emys.add(emy)
+        if tmr % 200 == 0:
+            emys.add(Enemy())
+        if tmr // 5000 >= 1:
+            if tmr % 300 == 0:
+                emys.add(Enemy())
+        if tmr // 10000 >= 1:
+            if tmr % 150 == 0:
+                emys.add(Enemy())
         for item in pg.sprite.spritecollide(car, items, True):
-            score += 10
+            score += item.score
         if len(pg.sprite.spritecollide(car,emys,False)) != 0:
             if car.state == "normal":
                 for hit in pg.sprite.spritecollide(car,emys,False):
